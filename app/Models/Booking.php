@@ -20,6 +20,9 @@ class Booking extends Model
         'address',
         'customer_note',
         'status',
+        'on_the_way_at',
+        'started_at',
+        'completed_at',
     ];
 
     protected function casts(): array
@@ -28,6 +31,9 @@ class Booking extends Model
             'service_price' => 'decimal:2',
             'scheduled_at' => 'datetime',
             'status' => BookingStatus::class,
+            'on_the_way_at' => 'datetime',
+            'started_at' => 'datetime',
+            'completed_at' => 'datetime',
         ];
     }
 

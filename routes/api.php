@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\ServiceCategoryController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\Staff\StaffAssignmentController;
+use App\Http\Controllers\Api\Staff\StaffBookingWorkflowController;
 use App\Http\Controllers\Api\Staff\StaffProfileController;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -57,8 +58,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/availability', [StaffProfileController::class, 'updateAvailability',]);
 
         Route::get('/assignments', [StaffAssignmentController::class, 'index']);
-        Route::get('/assignments/{assignment}', [StaffAssignmentController::class, 'show']);
         Route::patch('/assignments/{assignment}/respond', [StaffAssignmentController::class, 'respond']);
+        Route::patch('/assignments/{assignment}/work-status', [StaffBookingWorkflowController::class, 'updateStatus',]);
+        Route::get('/assignments/{assignment}', [StaffAssignmentController::class, 'show']);
     });
 
 

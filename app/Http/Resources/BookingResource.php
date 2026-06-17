@@ -39,6 +39,17 @@ class BookingResource extends JsonResource
             'customer_note' => $this->customer_note,
             'status' => $this->status->value,
 
+            'workflow' => [
+                'on_the_way_at' =>
+                $this->on_the_way_at?->toISOString(),
+
+                'started_at' =>
+                $this->started_at?->toISOString(),
+
+                'completed_at' =>
+                $this->completed_at?->toISOString(),
+            ],
+
             'latest_assignment' => new BookingAssignmentResource(
                 $this->whenLoaded('latestAssignment')
             ),
