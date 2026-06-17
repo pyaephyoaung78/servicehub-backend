@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\BookingStatus;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+class Booking extends Model
+{
+    protected $fillable = [
+        'customer_id',
+        'service_id',
+        'service_name',
+        'service_price',
+        'scheduled_at',
+        'phone',
+        'address',
+        'customer_note',
+        'status',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'service_price' => 'decimal:2',
+            'scheduled_at' => 'datetime',
+            'status' => BookingStatus::class,
+        ];
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class);
+    }
+
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(BookingAssignment::class);
+    }
+
+    public function latestAssignment(): HasOne
+    {
+        return $this->hasOne(BookingAssignment::class)
+            ->latestOfMany();
+    }
+}
