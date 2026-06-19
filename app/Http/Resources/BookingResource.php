@@ -39,6 +39,20 @@ class BookingResource extends JsonResource
             'customer_note' => $this->customer_note,
             'status' => $this->status->value,
 
+            'invoice' => $this->whenLoaded(
+                'invoice',
+                fn() => $this->invoice
+                    ? [
+                        'id' => $this->invoice->id,
+                        'invoice_no' => $this->invoice->invoice_no,
+                        'payment_status' => $this->invoice->payment_status->value,
+                        'total_amount' => $this->invoice->total_amount,
+                        'paid_amount' => $this->invoice->paid_amount,
+                        'remaining_amount' => $this->invoice->remaining_amount,
+                    ]
+                    : null
+            ),
+
             'workflow' => [
                 'on_the_way_at' =>
                 $this->on_the_way_at?->toISOString(),

@@ -24,6 +24,7 @@ class BookingController extends Controller
                 'service.category',
                 'cancelledBy',
                 'rejectedBy',
+                'invoice',
             ]);
 
         if ($request->filled('status')) {
@@ -108,6 +109,7 @@ class BookingController extends Controller
                 'service.category',
                 'cancelledBy',
                 'rejectedBy',
+                'invoice',
             ])
             ->findOrFail($booking);
 

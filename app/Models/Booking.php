@@ -85,5 +85,9 @@ class Booking extends Model
             'rejected_by'
         );
     }
-    
+
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(Invoice::class);
+    }
 }

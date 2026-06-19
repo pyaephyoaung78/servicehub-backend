@@ -26,6 +26,7 @@ class AdminBookingController extends Controller
                 'latestAssignment.assignedBy',
                 'cancelledBy',
                 'rejectedBy',
+                'invoice',
             ]);
 
         if (! empty($data['status'])) {
@@ -104,6 +105,7 @@ class AdminBookingController extends Controller
             'latestAssignment.assignedBy',
             'cancelledBy',
             'rejectedBy',
+            'invoice',
         ]);
 
         return $this->successResponse(

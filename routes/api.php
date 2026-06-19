@@ -3,12 +3,14 @@
 use App\Http\Controllers\Api\Admin\AdminBookingAssignmentController;
 use App\Http\Controllers\Api\Admin\AdminBookingClosureController;
 use App\Http\Controllers\Api\Admin\AdminBookingController;
+use App\Http\Controllers\Api\Admin\AdminInvoiceController;
 use App\Http\Controllers\Api\Admin\AdminStaffController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\Customer\CustomerBookingCancellationController;
+use App\Http\Controllers\Api\Customer\CustomerInvoiceController;
 use App\Http\Controllers\Api\ServiceCategoryController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\Staff\StaffAssignmentController;
@@ -49,6 +51,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/bookings/{booking}/reject', [AdminBookingClosureController::class, 'reject',]);
         Route::get('/bookings/{booking}', [AdminBookingController::class, 'show']);
 
+        Route::get('/invoices', [AdminInvoiceController::class, 'index',]);
+        Route::post('/bookings/{booking}/invoice', [AdminInvoiceController::class, 'storeFromBooking',]);
+        Route::get('/invoices/{invoice}', [AdminInvoiceController::class, 'show',]);
+        Route::post('/invoices/{invoice}/payments', [AdminInvoiceController::class, 'recordPayment',]);
+
         Route::get('/staff', [AdminStaffController::class, 'index']);
         Route::post('/staff', [AdminStaffController::class, 'store']);
         Route::get('/staff/{staffProfile}', [AdminStaffController::class, 'show']);
@@ -76,6 +83,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/bookings/{booking}', [BookingController::class, 'show']);
 
         Route::patch('/bookings/{booking}/cancel', [CustomerBookingCancellationController::class, 'cancel',]);
+
+        Route::get('/invoices', [CustomerInvoiceController::class, 'index',]);
+        Route::get('/invoices/{invoice}', [CustomerInvoiceController::class, 'show',]);
+
     });
 });
 
