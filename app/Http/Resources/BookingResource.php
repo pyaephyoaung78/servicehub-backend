@@ -50,6 +50,38 @@ class BookingResource extends JsonResource
                 $this->completed_at?->toISOString(),
             ],
 
+            'closure' => [
+                'cancellation_reason' =>
+                $this->cancellation_reason,
+
+                'cancelled_at' =>
+                $this->cancelled_at?->toISOString(),
+
+                'cancelled_by' => $this->whenLoaded(
+                    'cancelledBy',
+                    fn() => [
+                        'id' => $this->cancelledBy?->id,
+                        'name' => $this->cancelledBy?->name,
+                        'role' => $this->cancelledBy?->role,
+                    ]
+                ),
+
+                'rejection_reason' =>
+                $this->rejection_reason,
+
+                'rejected_at' =>
+                $this->rejected_at?->toISOString(),
+
+                'rejected_by' => $this->whenLoaded(
+                    'rejectedBy',
+                    fn() => [
+                        'id' => $this->rejectedBy?->id,
+                        'name' => $this->rejectedBy?->name,
+                        'role' => $this->rejectedBy?->role,
+                    ]
+                ),
+            ],
+
             'latest_assignment' => new BookingAssignmentResource(
                 $this->whenLoaded('latestAssignment')
             ),

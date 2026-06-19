@@ -24,6 +24,8 @@ class AdminBookingController extends Controller
                 'service.category',
                 'latestAssignment.staffProfile.user',
                 'latestAssignment.assignedBy',
+                'cancelledBy',
+                'rejectedBy',
             ]);
 
         if (! empty($data['status'])) {
@@ -100,6 +102,8 @@ class AdminBookingController extends Controller
             'service.category',
             'latestAssignment.staffProfile.user',
             'latestAssignment.assignedBy',
+            'cancelledBy',
+            'rejectedBy',
         ]);
 
         return $this->successResponse(
