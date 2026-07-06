@@ -20,7 +20,13 @@ class BookingController extends Controller
     {
         $query = Booking::query()
             ->where('customer_id', $request->user()->id)
-            ->with('service.category');
+            ->with([
+                'service.category',
+                'cancelledBy',
+                'rejectedBy',
+                'invoice',
+                'quotation',
+            ]);
 
         if ($request->filled('status')) {
             $validStatuses = array_column(
@@ -100,7 +106,13 @@ class BookingController extends Controller
          */
         $ownedBooking = Booking::query()
             ->where('customer_id', $request->user()->id)
-            ->with('service.category')
+            ->with([
+                'service.category',
+                'cancelledBy',
+                'rejectedBy',
+                'invoice',
+                'quotation',
+            ])
             ->findOrFail($booking);
 
         return $this->successResponse(

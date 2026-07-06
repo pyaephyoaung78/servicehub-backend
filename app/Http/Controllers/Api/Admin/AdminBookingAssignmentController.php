@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\AssignmentStatus;
 use App\Enums\BookingStatus;
+use App\Enums\QuotationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssignStaffRequest;
 use App\Http\Resources\BookingAssignmentResource;
@@ -15,6 +16,7 @@ use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class AdminBookingAssignmentController extends Controller
 {
@@ -84,6 +86,22 @@ class AdminBookingAssignmentController extends Controller
                             'errors' => null,
                         ], 422)
                     );
+                }
+
+                $hasAcceptedQuotation = $lockedBooking
+                    ->quotation()
+                    ->where(
+                        'status',
+                        QuotationStatus::Accepted->value
+                    )
+                    ->exists();
+
+                if (! $hasAcceptedQuotation) {
+                    throw ValidationException::withMessages([
+                        'quotation' => [
+                            'Staff can only be assigned after the customer accepts the quotation.',
+                        ],
+                    ]);
                 }
 
                 $hasActiveAssignment = BookingAssignment::query()

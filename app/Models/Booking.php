@@ -20,6 +20,17 @@ class Booking extends Model
         'address',
         'customer_note',
         'status',
+        'on_the_way_at',
+        'started_at',
+        'completed_at',
+
+        'cancellation_reason',
+        'cancelled_by',
+        'cancelled_at',
+
+        'rejection_reason',
+        'rejected_by',
+        'rejected_at',
     ];
 
     protected function casts(): array
@@ -28,6 +39,13 @@ class Booking extends Model
             'service_price' => 'decimal:2',
             'scheduled_at' => 'datetime',
             'status' => BookingStatus::class,
+
+            'on_the_way_at' => 'datetime',
+            'started_at' => 'datetime',
+            'completed_at' => 'datetime',
+
+            'cancelled_at' => 'datetime',
+            'rejected_at' => 'datetime',
         ];
     }
 
@@ -51,4 +69,31 @@ class Booking extends Model
         return $this->hasOne(BookingAssignment::class)
             ->latestOfMany();
     }
+
+    public function cancelledBy(): BelongsTo
+    {
+        return $this->belongsTo(
+            User::class,
+            'cancelled_by'
+        );
+    }
+
+    public function rejectedBy(): BelongsTo
+    {
+        return $this->belongsTo(
+            User::class,
+            'rejected_by'
+        );
+    }
+
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(Invoice::class);
+    }
+
+    public function quotation(): HasOne
+    {
+        return $this->hasOne(Quotation::class);
+    }
+    
 }

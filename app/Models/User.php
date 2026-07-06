@@ -47,4 +47,28 @@ class User extends Authenticatable
         return $this->hasOne(StaffProfile::class);
     }
 
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'customer_id');
+    }
+
+    public function issuedInvoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'issued_by');
+    }
+
+    public function receivedPayments(): HasMany
+    {
+        return $this->hasMany(InvoicePayment::class, 'received_by');
+    }
+
+    public function quotations(): HasMany
+    {
+        return $this->hasMany(Quotation::class, 'customer_id');
+    }
+
+    public function createdQuotations(): HasMany
+    {
+        return $this->hasMany(Quotation::class, 'created_by');
+    }
 }
