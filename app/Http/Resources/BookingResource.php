@@ -39,6 +39,19 @@ class BookingResource extends JsonResource
             'customer_note' => $this->customer_note,
             'status' => $this->status->value,
 
+            'quotation' => $this->whenLoaded(
+                'quotation',
+                fn() => $this->quotation
+                    ? [
+                        'id' => $this->quotation->id,
+                        'quotation_no' => $this->quotation->quotation_no,
+                        'status' => $this->quotation->status->value,
+                        'total_amount' => $this->quotation->total_amount,
+                        'valid_until' => $this->quotation->valid_until?->toISOString(),
+                    ]
+                    : null
+            ),
+
             'invoice' => $this->whenLoaded(
                 'invoice',
                 fn() => $this->invoice

@@ -61,4 +61,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(InvoicePayment::class, 'received_by');
     }
+
+    public function quotations(): HasMany
+    {
+        return $this->hasMany(Quotation::class, 'customer_id');
+    }
+
+    public function createdQuotations(): HasMany
+    {
+        return $this->hasMany(Quotation::class, 'created_by');
+    }
 }

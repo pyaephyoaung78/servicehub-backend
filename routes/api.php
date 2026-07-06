@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Admin\AdminBookingAssignmentController;
 use App\Http\Controllers\Api\Admin\AdminBookingClosureController;
 use App\Http\Controllers\Api\Admin\AdminBookingController;
 use App\Http\Controllers\Api\Admin\AdminInvoiceController;
+use App\Http\Controllers\Api\Admin\AdminQuotationController;
 use App\Http\Controllers\Api\Admin\AdminStaffController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\Customer\CustomerBookingCancellationController;
 use App\Http\Controllers\Api\Customer\CustomerInvoiceController;
+use App\Http\Controllers\Api\Customer\CustomerQuotationController;
 use App\Http\Controllers\Api\ServiceCategoryController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\Staff\StaffAssignmentController;
@@ -46,6 +48,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/bookings', [AdminBookingController::class, 'index']);
         Route::get('/bookings/{booking}/eligible-staff', [AdminBookingAssignmentController::class, 'eligibleStaff',]);
         Route::post('/bookings/{booking}/assign', [AdminBookingAssignmentController::class, 'assign',]);
+
+        Route::get('/quotations', [AdminQuotationController::class, 'index',]);
+        Route::post('/bookings/{booking}/quotation', [AdminQuotationController::class, 'storeForBooking',]);
+        Route::get('/quotations/{quotation}', [AdminQuotationController::class, 'show',]);
 
         Route::patch('/bookings/{booking}/cancel', [AdminBookingClosureController::class, 'cancel',]);
         Route::patch('/bookings/{booking}/reject', [AdminBookingClosureController::class, 'reject',]);
@@ -84,9 +90,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::patch('/bookings/{booking}/cancel', [CustomerBookingCancellationController::class, 'cancel',]);
 
+        Route::get('/quotations', [CustomerQuotationController::class, 'index',]);
+        Route::get('/quotations/{quotation}', [CustomerQuotationController::class, 'show',]);
+        Route::patch('/quotations/{quotation}/respond', [CustomerQuotationController::class, 'respond',]);
+        
         Route::get('/invoices', [CustomerInvoiceController::class, 'index',]);
         Route::get('/invoices/{invoice}', [CustomerInvoiceController::class, 'show',]);
-
     });
 });
 

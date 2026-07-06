@@ -27,6 +27,7 @@ class AdminBookingController extends Controller
                 'cancelledBy',
                 'rejectedBy',
                 'invoice',
+                'quotation',
             ]);
 
         if (! empty($data['status'])) {
@@ -106,6 +107,7 @@ class AdminBookingController extends Controller
             'cancelledBy',
             'rejectedBy',
             'invoice',
+            'quotation',
         ]);
 
         return $this->successResponse(

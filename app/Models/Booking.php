@@ -90,4 +90,10 @@ class Booking extends Model
     {
         return $this->hasOne(Invoice::class);
     }
+
+    public function quotation(): HasOne
+    {
+        return $this->hasOne(Quotation::class);
+    }
+    
 }
