@@ -128,8 +128,20 @@
                     <dt class="text-slate-500">Invoice</dt>
                     <dd class="mt-1 font-medium text-slate-900">
                         @if ($booking->invoice)
-                            {{ $booking->invoice->invoice_no }}
+                            <a
+                                href="{{ route('admin.invoices.show', $booking->invoice) }}"
+                                class="text-blue-700 hover:text-blue-900"
+                            >
+                                {{ $booking->invoice->invoice_no }}
+                            </a>
                             — {{ strtoupper($booking->invoice->payment_status->value) }}
+                        @elseif ($booking->status === \App\Enums\BookingStatus::Completed)
+                            <a
+                                href="{{ route('admin.invoices.create', ['booking' => $booking->id]) }}"
+                                class="text-blue-700 hover:text-blue-900"
+                            >
+                                Create invoice
+                            </a>
                         @else
                             Not issued
                         @endif

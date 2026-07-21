@@ -3,6 +3,8 @@
 use App\Http\Controllers\Web\Admin\AdminAuthController;
 use App\Http\Controllers\Web\Admin\AdminBookingController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
+use App\Http\Controllers\Web\Admin\AdminInvoiceController;
+use App\Http\Controllers\Web\Admin\AdminPaymentController;
 use App\Http\Controllers\Web\Admin\AdminQuotationController;
 use App\Http\Controllers\Web\Admin\AdminStaffController;
 use Illuminate\Support\Facades\Route;
@@ -76,6 +78,41 @@ Route::prefix('admin')
                 AdminQuotationController::class,
                 'show',
             ])->name('quotations.show');
+
+            Route::get('/invoices', [
+                AdminInvoiceController::class,
+                'index',
+            ])->name('invoices.index');
+
+            Route::get('/invoices/create', [
+                AdminInvoiceController::class,
+                'create',
+            ])->name('invoices.create');
+
+            Route::post('/invoices', [
+                AdminInvoiceController::class,
+                'store',
+            ])->name('invoices.store');
+
+            Route::get('/invoices/{invoice}', [
+                AdminInvoiceController::class,
+                'show',
+            ])->name('invoices.show');
+
+            Route::post('/invoices/{invoice}/payments', [
+                AdminInvoiceController::class,
+                'recordPayment',
+            ])->name('invoices.payments.store');
+
+            Route::get('/payments', [
+                AdminPaymentController::class,
+                'index',
+            ])->name('payments.index');
+
+            Route::get('/payments/{payment}', [
+                AdminPaymentController::class,
+                'show',
+            ])->name('payments.show');
 
             Route::get('/staff', [
                 AdminStaffController::class,

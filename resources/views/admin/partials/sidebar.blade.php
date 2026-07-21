@@ -56,15 +56,23 @@
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.invoices.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.invoices.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.invoices.*'),
+            ])
         >
             Invoices
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.payments.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.payments.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.payments.*'),
+            ])
         >
             Payments
         </a>
