@@ -26,20 +26,18 @@ class AdminStaffController extends Controller
         $staff = StaffProfile::query()
             ->with(['user', 'services.category'])
             ->when(
-                $filters['is_active'] ?? null,
-                fn ($query, $isActive) => $query->where('is_active', $isActive)
+                isset($filters['is_active']),
+                fn ($query) => $query->where(
+                    'is_active',
+                    filter_var($filters['is_active'], FILTER_VALIDATE_BOOLEAN)
+                )
             )
             ->when(
-                array_key_exists('is_active', $filters) && $filters['is_active'] === '0',
-                fn ($query) => $query->where('is_active', false)
-            )
-            ->when(
-                $filters['is_available'] ?? null,
-                fn ($query, $isAvailable) => $query->where('is_available', $isAvailable)
-            )
-            ->when(
-                array_key_exists('is_available', $filters) && $filters['is_available'] === '0',
-                fn ($query) => $query->where('is_available', false)
+                isset($filters['is_available']),
+                fn ($query) => $query->where(
+                    'is_available',
+                    filter_var($filters['is_available'], FILTER_VALIDATE_BOOLEAN)
+                )
             )
             ->when(
                 $filters['search'] ?? null,
