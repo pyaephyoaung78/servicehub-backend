@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Web\Admin\AdminAuthController;
+use App\Http\Controllers\Web\Admin\AdminBookingController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
+use App\Http\Controllers\Web\Admin\AdminQuotationController;
+use App\Http\Controllers\Web\Admin\AdminStaffController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,5 +36,80 @@ Route::prefix('admin')
                 AdminAuthController::class,
                 'logout',
             ])->name('logout');
+
+            Route::get('/bookings', [
+                AdminBookingController::class,
+                'index',
+            ])->name('bookings.index');
+
+            Route::get('/bookings/{booking}', [
+                AdminBookingController::class,
+                'show',
+            ])->name('bookings.show');
+
+            Route::patch('/bookings/{booking}/cancel', [
+                AdminBookingController::class,
+                'cancel',
+            ])->name('bookings.cancel');
+
+            Route::patch('/bookings/{booking}/reject', [
+                AdminBookingController::class,
+                'reject',
+            ])->name('bookings.reject');
+
+            Route::get('/quotations', [
+                AdminQuotationController::class,
+                'index',
+            ])->name('quotations.index');
+
+            Route::get('/quotations/create', [
+                AdminQuotationController::class,
+                'create',
+            ])->name('quotations.create');
+
+            Route::post('/quotations', [
+                AdminQuotationController::class,
+                'store',
+            ])->name('quotations.store');
+
+            Route::get('/quotations/{quotation}', [
+                AdminQuotationController::class,
+                'show',
+            ])->name('quotations.show');
+
+            Route::get('/staff', [
+                AdminStaffController::class,
+                'index',
+            ])->name('staff.index');
+
+            Route::get('/staff/create', [
+                AdminStaffController::class,
+                'create',
+            ])->name('staff.create');
+
+            Route::post('/staff', [
+                AdminStaffController::class,
+                'store',
+            ])->name('staff.store');
+
+            Route::get('/staff/{staffProfile}', [
+                AdminStaffController::class,
+                'show',
+            ])->name('staff.show');
+
+            Route::get('/staff/{staffProfile}/edit', [
+                AdminStaffController::class,
+                'edit',
+            ])->name('staff.edit');
+
+            Route::put('/staff/{staffProfile}', [
+                AdminStaffController::class,
+                'update',
+            ])->name('staff.update');
+
+            Route::delete('/staff/{staffProfile}', [
+                AdminStaffController::class,
+                'destroy',
+            ])->name('staff.destroy');
         });
     });

@@ -13,28 +13,44 @@
     <nav class="flex-1 px-4 py-5 space-y-1">
         <a
             href="{{ route('admin.dashboard') }}"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium bg-white/10 text-white"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.dashboard'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.dashboard'),
+            ])
         >
             Dashboard
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.bookings.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.bookings.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.bookings.*'),
+            ])
         >
             Bookings
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.quotations.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.quotations.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.quotations.*'),
+            ])
         >
             Quotations
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.staff.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.staff.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.staff.*'),
+            ])
         >
             Staff
         </a>
