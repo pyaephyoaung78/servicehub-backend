@@ -70,7 +70,10 @@ class AdminInvoiceController extends Controller
     public function create(Request $request): View
     {
         $eligibleBookings = Booking::query()
-            ->with('customer')
+            ->with([
+                'customer',
+                'quotation',
+            ])
             ->where('status', 'completed')
             ->whereDoesntHave('invoice')
             ->orderByDesc('completed_at')
@@ -119,7 +122,7 @@ class AdminInvoiceController extends Controller
         $invoice->load([
             'customer',
             'issuedBy',
-            'booking',
+            'booking.quotation',
             'payments.receivedBy',
         ]);
 

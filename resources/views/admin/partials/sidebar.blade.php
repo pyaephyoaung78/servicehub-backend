@@ -78,8 +78,12 @@
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.reports.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.reports.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.reports.*'),
+            ])
         >
             Reports
         </a>

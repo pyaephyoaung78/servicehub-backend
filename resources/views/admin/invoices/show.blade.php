@@ -73,6 +73,22 @@
                 </div>
             </dl>
 
+            @if ($invoice->booking?->quotation?->status === \App\Enums\QuotationStatus::Accepted)
+                <div class="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                    <p class="font-semibold">Pricing source: accepted quotation</p>
+                    <p class="mt-1">
+                        This invoice uses
+                        <a
+                            href="{{ route('admin.quotations.show', $invoice->booking->quotation) }}"
+                            class="font-semibold underline hover:text-emerald-950"
+                        >
+                            {{ $invoice->booking->quotation->quotation_no }}
+                        </a>
+                        pricing.
+                    </p>
+                </div>
+            @endif
+
             @if ($invoice->note)
                 <div class="mt-6 rounded-xl bg-slate-50 p-4 text-sm text-slate-700">
                     <p class="font-semibold text-slate-900">Note</p>

@@ -39,11 +39,30 @@
                     @foreach ($eligibleBookings as $booking)
                         <option value="{{ $booking->id }}" @selected(old('booking_id', $selectedBooking?->id) == $booking->id)>
                             #{{ $booking->id }} — {{ $booking->customer?->name }} —
-                            {{ $booking->service_name }} — completed {{ $booking->completed_at?->format('d M Y, h:i A') }}
+                            {{ $booking->service_name }} —
+                            @if ($booking->quotation?->status === \App\Enums\QuotationStatus::Accepted)
+                                accepted quote {{ number_format((float) $booking->quotation->total_amount, 0) }} MMK —
+                            @endif
+                            completed {{ $booking->completed_at?->format('d M Y, h:i A') }}
                         </option>
                     @endforeach
                 </select>
             </label>
+
+            @if ($selectedBooking?->quotation?->status === \App\Enums\QuotationStatus::Accepted)
+                <div class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                    <p class="font-semibold">Accepted quotation pricing will be used</p>
+                    <p class="mt-1">
+                        {{ $selectedBooking->quotation->quotation_no }}:
+                        {{ number_format((float) $selectedBooking->quotation->total_amount, 0) }} MMK
+                        (service price, extra fee, and discount).
+                    </p>
+                </div>
+            @else
+                <div class="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                    No accepted quotation is attached to this booking. The invoice will use the booking price and the adjustments below.
+                </div>
+            @endif
 
             <div class="mt-5 grid gap-5 sm:grid-cols-2">
                 <label class="block">
@@ -63,6 +82,10 @@
                     <input type="text" name="payment_method" value="{{ old('payment_method') }}" placeholder="Cash, KPay, WavePay" class="w-full rounded-lg border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500">
                 </label>
             </div>
+
+            <p class="mt-3 text-xs text-slate-500">
+                When an accepted quotation exists, the submitted extra fee and discount values are ignored and the accepted quotation remains the source of truth.
+            </p>
 
             <label class="mt-5 block">
                 <span class="mb-1 block text-sm font-medium text-slate-700">Invoice note</span>

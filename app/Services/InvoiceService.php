@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\BookingStatus;
 use App\Enums\PaymentStatus;
+use App\Enums\QuotationStatus;
 use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\User;
@@ -32,14 +33,29 @@ class InvoiceService
             ]);
         }
 
-        $servicePrice = (float) $booking->service_price;
-        $extraFee = (float) ($data['extra_fee'] ?? 0);
-        $discountAmount =
-            (float) ($data['discount_amount'] ?? 0);
+        $acceptedQuotation = $booking->quotation()
+            ->where('status', QuotationStatus::Accepted->value)
+            ->first();
+
+        $serviceName = $acceptedQuotation?->service_name
+            ?? $booking->service_name;
+        $servicePrice = (float) (
+            $acceptedQuotation?->service_price
+            ?? $booking->service_price
+        );
+        $extraFee = (float) (
+            $acceptedQuotation?->extra_fee
+            ?? ($data['extra_fee'] ?? 0)
+        );
+        $discountAmount = (float) (
+            $acceptedQuotation?->discount_amount
+            ?? ($data['discount_amount'] ?? 0)
+        );
         $paidAmount = (float) ($data['paid_amount'] ?? 0);
 
-        $totalAmount =
-            $servicePrice + $extraFee - $discountAmount;
+        $totalAmount = $acceptedQuotation
+            ? (float) $acceptedQuotation->total_amount
+            : $servicePrice + $extraFee - $discountAmount;
 
         if ($totalAmount < 0) {
             throw ValidationException::withMessages([
@@ -69,7 +85,7 @@ class InvoiceService
             'customer_id' => $booking->customer_id,
             'issued_by' => $admin->id,
             'invoice_no' => $this->generateInvoiceNo(),
-            'service_name' => $booking->service_name,
+            'service_name' => $serviceName,
             'service_price' => $servicePrice,
             'extra_fee' => $extraFee,
             'discount_amount' => $discountAmount,
@@ -88,8 +104,7 @@ class InvoiceService
             $invoice->payments()->create([
                 'received_by' => $admin->id,
                 'amount' => $paidAmount,
-                'payment_method' =>
-                    $data['payment_method'] ?? null,
+                'payment_method' => $data['payment_method'] ?? null,
                 'note' => 'Initial payment',
                 'paid_at' => now(),
             ]);
@@ -175,7 +190,7 @@ class InvoiceService
             ->whereDate('created_at', today())
             ->count() + 1;
 
-        return 'INV-' . $date . '-' . str_pad(
+        return 'INV-'.$date.'-'.str_pad(
             (string) $count,
             4,
             '0',

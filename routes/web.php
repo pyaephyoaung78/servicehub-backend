@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\Admin\AdminDashboardController;
 use App\Http\Controllers\Web\Admin\AdminInvoiceController;
 use App\Http\Controllers\Web\Admin\AdminPaymentController;
 use App\Http\Controllers\Web\Admin\AdminQuotationController;
+use App\Http\Controllers\Web\Admin\AdminReportController;
 use App\Http\Controllers\Web\Admin\AdminStaffController;
 use Illuminate\Support\Facades\Route;
 
@@ -113,6 +114,11 @@ Route::prefix('admin')
                 AdminPaymentController::class,
                 'show',
             ])->name('payments.show');
+
+            Route::get('/reports', [
+                AdminReportController::class,
+                'index',
+            ])->name('reports.index');
 
             Route::get('/staff', [
                 AdminStaffController::class,
