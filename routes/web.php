@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\Admin\AdminBookingController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
 use App\Http\Controllers\Web\Admin\AdminInvoiceController;
 use App\Http\Controllers\Web\Admin\AdminPaymentController;
+use App\Http\Controllers\Web\Admin\AdminPaymentProofController;
 use App\Http\Controllers\Web\Admin\AdminQuotationController;
 use App\Http\Controllers\Web\Admin\AdminReportController;
 use App\Http\Controllers\Web\Admin\AdminStaffController;
@@ -114,6 +115,31 @@ Route::prefix('admin')
                 AdminPaymentController::class,
                 'show',
             ])->name('payments.show');
+
+            Route::get('/payment-proofs', [
+                AdminPaymentProofController::class,
+                'index',
+            ])->name('payment-proofs.index');
+
+            Route::get('/payment-proofs/{paymentProof}', [
+                AdminPaymentProofController::class,
+                'show',
+            ])->name('payment-proofs.show');
+
+            Route::get('/payment-proofs/{paymentProof}/file', [
+                AdminPaymentProofController::class,
+                'file',
+            ])->name('payment-proofs.file');
+
+            Route::post('/payment-proofs/{paymentProof}/approve', [
+                AdminPaymentProofController::class,
+                'approve',
+            ])->name('payment-proofs.approve');
+
+            Route::post('/payment-proofs/{paymentProof}/reject', [
+                AdminPaymentProofController::class,
+                'reject',
+            ])->name('payment-proofs.reject');
 
             Route::get('/reports', [
                 AdminReportController::class,

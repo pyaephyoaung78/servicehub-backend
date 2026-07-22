@@ -124,6 +124,8 @@ class AdminInvoiceController extends Controller
             'issuedBy',
             'booking.quotation',
             'payments.receivedBy',
+            'paymentProofs.customer',
+            'paymentProofs.reviewedBy',
         ]);
 
         return view('admin.invoices.show', [

@@ -20,6 +20,7 @@ class CustomerInvoiceController extends Controller
             ->with([
                 'booking',
                 'payments.receivedBy',
+                'paymentProofs',
             ])
             ->latest('issued_at')
             ->paginate(15);
@@ -41,6 +42,7 @@ class CustomerInvoiceController extends Controller
             ->with([
                 'booking',
                 'payments.receivedBy',
+                'paymentProofs',
             ])
             ->findOrFail($invoice);
 

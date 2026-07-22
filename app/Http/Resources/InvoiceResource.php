@@ -63,6 +63,10 @@ class InvoiceResource extends JsonResource
             'payments' => InvoicePaymentResource::collection(
                 $this->whenLoaded('payments')
             ),
+
+            'payment_proofs' => PaymentProofResource::collection(
+                $this->whenLoaded('paymentProofs')
+            ),
         ];
     }
 }

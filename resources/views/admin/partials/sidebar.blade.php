@@ -78,6 +78,17 @@
         </a>
 
         <a
+            href="{{ route('admin.payment-proofs.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.payment-proofs.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.payment-proofs.*'),
+            ])
+        >
+            Payment Proofs
+        </a>
+
+        <a
             href="{{ route('admin.reports.index') }}"
             @class([
                 'flex items-center rounded-xl px-4 py-3 text-sm font-medium',

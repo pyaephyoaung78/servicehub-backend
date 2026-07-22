@@ -118,6 +118,33 @@
         </section>
     </div>
 
+    @if ($invoice->paymentProofs->isNotEmpty())
+        <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="font-semibold text-slate-900">Payment proofs</h2>
+                    <p class="mt-1 text-sm text-slate-500">Customer-submitted payment evidence for this invoice.</p>
+                </div>
+                <a href="{{ route('admin.payment-proofs.index', ['search' => $invoice->invoice_no]) }}" class="text-sm font-medium text-blue-700 hover:text-blue-900">
+                    View in review queue →
+                </a>
+            </div>
+
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                @foreach ($invoice->paymentProofs->sortByDesc('created_at') as $paymentProof)
+                    <a href="{{ route('admin.payment-proofs.show', $paymentProof) }}" class="rounded-xl bg-slate-50 p-4 hover:bg-slate-100">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="font-semibold text-slate-900">{{ number_format((float) $paymentProof->amount, 0) }} MMK</span>
+                            <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-700">{{ strtoupper($paymentProof->status->value) }}</span>
+                        </div>
+                        <p class="mt-2 text-sm text-slate-600">{{ $paymentProof->payment_method }}</p>
+                        <p class="mt-1 text-xs text-slate-500">{{ $paymentProof->created_at?->format('d M Y, h:i A') }}</p>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
     @if ($invoice->payment_status !== \App\Enums\PaymentStatus::Paid)
         <section class="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-6">
             <h2 class="text-lg font-semibold text-blue-950">Record payment</h2>
