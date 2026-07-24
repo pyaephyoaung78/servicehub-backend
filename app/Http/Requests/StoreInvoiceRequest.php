@@ -17,18 +17,21 @@ class StoreInvoiceRequest extends FormRequest
             'extra_fee' => [
                 'nullable',
                 'numeric',
+                'decimal:0,2',
                 'min:0',
             ],
 
             'discount_amount' => [
                 'nullable',
                 'numeric',
+                'decimal:0,2',
                 'min:0',
             ],
 
             'paid_amount' => [
                 'nullable',
                 'numeric',
+                'decimal:0,2',
                 'min:0',
             ],
 

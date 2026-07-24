@@ -30,7 +30,7 @@ class PaymentProofWorkflowTest extends TestCase
             customer: $customer,
             proof: UploadedFile::fake()->image('kpay-receipt.jpg'),
             data: [
-                'amount' => 25000,
+                'amount' => '25000.10',
                 'payment_method' => 'KPay',
                 'note' => 'Customer transfer reference 1234',
             ]
@@ -48,13 +48,13 @@ class PaymentProofWorkflowTest extends TestCase
         $invoice->refresh();
 
         $this->assertSame(PaymentProofStatus::Approved, $approvedProof->status);
-        $this->assertSame(25000.0, (float) $invoice->paid_amount);
-        $this->assertSame(75000.0, (float) $invoice->remaining_amount);
+        $this->assertSame('25000.10', (string) $invoice->paid_amount);
+        $this->assertSame('75000.15', (string) $invoice->remaining_amount);
         $this->assertNotNull($approvedProof->invoice_payment_id);
         $this->assertDatabaseHas('invoice_payments', [
             'id' => $approvedProof->invoice_payment_id,
             'invoice_id' => $invoice->id,
-            'amount' => 25000,
+            'amount' => '25000.10',
         ]);
     }
 
@@ -82,8 +82,8 @@ class PaymentProofWorkflowTest extends TestCase
         $invoice->refresh();
 
         $this->assertSame(PaymentProofStatus::Rejected, $rejectedProof->status);
-        $this->assertSame(0.0, (float) $invoice->paid_amount);
-        $this->assertSame(100000.0, (float) $invoice->remaining_amount);
+        $this->assertSame('0.00', (string) $invoice->paid_amount);
+        $this->assertSame('100000.25', (string) $invoice->remaining_amount);
         $this->assertDatabaseCount('invoice_payments', 0);
     }
 
@@ -106,13 +106,13 @@ class PaymentProofWorkflowTest extends TestCase
             'service_category_id' => $category->id,
             'name' => 'Home cleaning',
             'slug' => 'home-cleaning',
-            'base_price' => 100000,
+            'base_price' => '100000.25',
         ]);
         $booking = Booking::create([
             'customer_id' => $customer->id,
             'service_id' => $service->id,
             'service_name' => 'Home cleaning',
-            'service_price' => 100000,
+            'service_price' => '100000.25',
             'scheduled_at' => now()->subDay(),
             'phone' => '09123456789',
             'address' => 'Yangon',

@@ -32,6 +32,7 @@ class StoreServiceRequest extends FormRequest
             'base_price' => [
                 'required',
                 'numeric',
+                'decimal:0,2',
                 'min:0',
             ],
             'estimated_duration_minutes' => [

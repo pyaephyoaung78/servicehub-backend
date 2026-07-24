@@ -8,6 +8,7 @@ use App\Enums\QuotationStatus;
 use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Support\Money;
 use Illuminate\Validation\ValidationException;
 
 class InvoiceService
@@ -39,22 +40,22 @@ class InvoiceService
 
         $serviceName = $acceptedQuotation?->service_name
             ?? $booking->service_name;
-        $servicePrice = (float) (
+        $servicePrice = Money::toMinor(
             $acceptedQuotation?->service_price
             ?? $booking->service_price
         );
-        $extraFee = (float) (
+        $extraFee = Money::toMinor(
             $acceptedQuotation?->extra_fee
             ?? ($data['extra_fee'] ?? 0)
         );
-        $discountAmount = (float) (
+        $discountAmount = Money::toMinor(
             $acceptedQuotation?->discount_amount
             ?? ($data['discount_amount'] ?? 0)
         );
-        $paidAmount = (float) ($data['paid_amount'] ?? 0);
+        $paidAmount = Money::toMinor($data['paid_amount'] ?? 0);
 
         $totalAmount = $acceptedQuotation
-            ? (float) $acceptedQuotation->total_amount
+            ? Money::toMinor($acceptedQuotation->total_amount)
             : $servicePrice + $extraFee - $discountAmount;
 
         if ($totalAmount < 0) {
@@ -86,12 +87,12 @@ class InvoiceService
             'issued_by' => $admin->id,
             'invoice_no' => $this->generateInvoiceNo(),
             'service_name' => $serviceName,
-            'service_price' => $servicePrice,
-            'extra_fee' => $extraFee,
-            'discount_amount' => $discountAmount,
-            'total_amount' => $totalAmount,
-            'paid_amount' => $paidAmount,
-            'remaining_amount' => $remainingAmount,
+            'service_price' => Money::fromMinor($servicePrice),
+            'extra_fee' => Money::fromMinor($extraFee),
+            'discount_amount' => Money::fromMinor($discountAmount),
+            'total_amount' => Money::fromMinor($totalAmount),
+            'paid_amount' => Money::fromMinor($paidAmount),
+            'remaining_amount' => Money::fromMinor($remainingAmount),
             'payment_status' => $paymentStatus,
             'issued_at' => now(),
             'paid_at' => $paymentStatus === PaymentStatus::Paid
@@ -103,7 +104,7 @@ class InvoiceService
         if ($paidAmount > 0) {
             $invoice->payments()->create([
                 'received_by' => $admin->id,
-                'amount' => $paidAmount,
+                'amount' => Money::fromMinor($paidAmount),
                 'payment_method' => $data['payment_method'] ?? null,
                 'note' => 'Initial payment',
                 'paid_at' => now(),
@@ -126,9 +127,11 @@ class InvoiceService
             ]);
         }
 
-        $amount = (float) $data['amount'];
+        $amount = Money::toMinor($data['amount']);
 
-        if ($amount > (float) $invoice->remaining_amount) {
+        $remainingAmount = Money::toMinor($invoice->remaining_amount);
+
+        if ($amount > $remainingAmount) {
             throw ValidationException::withMessages([
                 'amount' => [
                     'Payment amount cannot be greater than remaining amount.',
@@ -138,26 +141,24 @@ class InvoiceService
 
         $invoice->payments()->create([
             'received_by' => $admin->id,
-            'amount' => $amount,
+            'amount' => Money::fromMinor($amount),
             'payment_method' => $data['payment_method'] ?? null,
             'note' => $data['note'] ?? null,
             'paid_at' => now(),
         ]);
 
-        $paidAmount =
-            (float) $invoice->paid_amount + $amount;
-
-        $remainingAmount =
-            (float) $invoice->total_amount - $paidAmount;
+        $paidAmount = Money::toMinor($invoice->paid_amount) + $amount;
+        $totalAmount = Money::toMinor($invoice->total_amount);
+        $remainingAmount = $totalAmount - $paidAmount;
 
         $paymentStatus = $this->calculatePaymentStatus(
             paidAmount: $paidAmount,
-            totalAmount: (float) $invoice->total_amount
+            totalAmount: $totalAmount
         );
 
         $invoice->update([
-            'paid_amount' => $paidAmount,
-            'remaining_amount' => $remainingAmount,
+            'paid_amount' => Money::fromMinor($paidAmount),
+            'remaining_amount' => Money::fromMinor($remainingAmount),
             'payment_status' => $paymentStatus,
             'paid_at' => $paymentStatus === PaymentStatus::Paid
                 ? now()
@@ -168,8 +169,8 @@ class InvoiceService
     }
 
     private function calculatePaymentStatus(
-        float $paidAmount,
-        float $totalAmount
+        int $paidAmount,
+        int $totalAmount
     ): PaymentStatus {
         if ($paidAmount <= 0) {
             return PaymentStatus::Unpaid;

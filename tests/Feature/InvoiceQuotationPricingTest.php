@@ -39,7 +39,7 @@ class InvoiceQuotationPricingTest extends TestCase
             'customer_id' => $customer->id,
             'service_id' => $service->id,
             'service_name' => 'Home cleaning',
-            'service_price' => 50000,
+            'service_price' => '50000.10',
             'scheduled_at' => now()->subDay(),
             'phone' => '09123456789',
             'address' => 'Yangon',
@@ -52,10 +52,10 @@ class InvoiceQuotationPricingTest extends TestCase
             'created_by' => $admin->id,
             'quotation_no' => 'QUO-TEST-0001',
             'service_name' => 'Premium home cleaning',
-            'service_price' => 90000,
-            'extra_fee' => 15000,
-            'discount_amount' => 5000,
-            'total_amount' => 100000,
+            'service_price' => '90000.10',
+            'extra_fee' => '15000.20',
+            'discount_amount' => '5000.05',
+            'total_amount' => '100000.25',
             'status' => QuotationStatus::Accepted,
             'sent_at' => now()->subDays(2),
             'accepted_at' => now()->subDay(),
@@ -65,18 +65,18 @@ class InvoiceQuotationPricingTest extends TestCase
             booking: $booking,
             admin: $admin,
             data: [
-                'extra_fee' => 999999,
+                'extra_fee' => '999999.99',
                 'discount_amount' => 0,
-                'paid_amount' => 25000,
+                'paid_amount' => '25000.10',
             ]
         );
 
         $this->assertSame('Premium home cleaning', $invoice->service_name);
-        $this->assertSame(90000.0, (float) $invoice->service_price);
-        $this->assertSame(15000.0, (float) $invoice->extra_fee);
-        $this->assertSame(5000.0, (float) $invoice->discount_amount);
-        $this->assertSame(100000.0, (float) $invoice->total_amount);
-        $this->assertSame(75000.0, (float) $invoice->remaining_amount);
+        $this->assertSame('90000.10', (string) $invoice->service_price);
+        $this->assertSame('15000.20', (string) $invoice->extra_fee);
+        $this->assertSame('5000.05', (string) $invoice->discount_amount);
+        $this->assertSame('100000.25', (string) $invoice->total_amount);
+        $this->assertSame('75000.15', (string) $invoice->remaining_amount);
         $this->assertSame($quotation->id, $booking->quotation->id);
     }
 }
