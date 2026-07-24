@@ -6,23 +6,23 @@ use App\Http\Controllers\Api\Admin\AdminBookingController;
 use App\Http\Controllers\Api\Admin\AdminInvoiceController;
 use App\Http\Controllers\Api\Admin\AdminQuotationController;
 use App\Http\Controllers\Api\Admin\AdminStaffController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\Customer\CustomerBookingCancellationController;
 use App\Http\Controllers\Api\Customer\CustomerInvoiceController;
+use App\Http\Controllers\Api\Customer\CustomerPaymentProofController;
 use App\Http\Controllers\Api\Customer\CustomerQuotationController;
 use App\Http\Controllers\Api\ServiceCategoryController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\Staff\StaffAssignmentController;
 use App\Http\Controllers\Api\Staff\StaffBookingWorkflowController;
 use App\Http\Controllers\Api\Staff\StaffProfileController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/auth/google', [AuthController::class, 'googleLogin']);
-
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -32,8 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/services', [ServiceController::class, 'index']);
     Route::get('/services/{service}', [ServiceController::class, 'show']);
 
-
-    #admin routes
+    // admin routes
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::post('/service-categories', [ServiceCategoryController::class, 'store']);
         Route::get('/service-categories/{serviceCategory}', [ServiceCategoryController::class, 'show']);
@@ -46,21 +45,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
 
         Route::get('/bookings', [AdminBookingController::class, 'index']);
-        Route::get('/bookings/{booking}/eligible-staff', [AdminBookingAssignmentController::class, 'eligibleStaff',]);
-        Route::post('/bookings/{booking}/assign', [AdminBookingAssignmentController::class, 'assign',]);
+        Route::get('/bookings/{booking}/eligible-staff', [AdminBookingAssignmentController::class, 'eligibleStaff']);
+        Route::post('/bookings/{booking}/assign', [AdminBookingAssignmentController::class, 'assign']);
 
-        Route::get('/quotations', [AdminQuotationController::class, 'index',]);
-        Route::post('/bookings/{booking}/quotation', [AdminQuotationController::class, 'storeForBooking',]);
-        Route::get('/quotations/{quotation}', [AdminQuotationController::class, 'show',]);
+        Route::get('/quotations', [AdminQuotationController::class, 'index']);
+        Route::post('/bookings/{booking}/quotation', [AdminQuotationController::class, 'storeForBooking']);
+        Route::get('/quotations/{quotation}', [AdminQuotationController::class, 'show']);
 
-        Route::patch('/bookings/{booking}/cancel', [AdminBookingClosureController::class, 'cancel',]);
-        Route::patch('/bookings/{booking}/reject', [AdminBookingClosureController::class, 'reject',]);
+        Route::patch('/bookings/{booking}/cancel', [AdminBookingClosureController::class, 'cancel']);
+        Route::patch('/bookings/{booking}/reject', [AdminBookingClosureController::class, 'reject']);
         Route::get('/bookings/{booking}', [AdminBookingController::class, 'show']);
 
-        Route::get('/invoices', [AdminInvoiceController::class, 'index',]);
-        Route::post('/bookings/{booking}/invoice', [AdminInvoiceController::class, 'storeFromBooking',]);
-        Route::get('/invoices/{invoice}', [AdminInvoiceController::class, 'show',]);
-        Route::post('/invoices/{invoice}/payments', [AdminInvoiceController::class, 'recordPayment',]);
+        Route::get('/invoices', [AdminInvoiceController::class, 'index']);
+        Route::post('/bookings/{booking}/invoice', [AdminInvoiceController::class, 'storeFromBooking']);
+        Route::get('/invoices/{invoice}', [AdminInvoiceController::class, 'show']);
+        Route::post('/invoices/{invoice}/payments', [AdminInvoiceController::class, 'recordPayment']);
 
         Route::get('/staff', [AdminStaffController::class, 'index']);
         Route::post('/staff', [AdminStaffController::class, 'store']);
@@ -69,33 +68,34 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/staff/{staffProfile}', [AdminStaffController::class, 'destroy']);
     });
 
-
-    #staff routes
+    // staff routes
     Route::middleware('role:staff')->prefix('staff')->group(function () {
         Route::get('/profile', [StaffProfileController::class, 'show']);
-        Route::patch('/availability', [StaffProfileController::class, 'updateAvailability',]);
+        Route::patch('/availability', [StaffProfileController::class, 'updateAvailability']);
 
         Route::get('/assignments', [StaffAssignmentController::class, 'index']);
         Route::patch('/assignments/{assignment}/respond', [StaffAssignmentController::class, 'respond']);
-        Route::patch('/assignments/{assignment}/work-status', [StaffBookingWorkflowController::class, 'updateStatus',]);
+        Route::patch('/assignments/{assignment}/work-status', [StaffBookingWorkflowController::class, 'updateStatus']);
         Route::get('/assignments/{assignment}', [StaffAssignmentController::class, 'show']);
     });
 
-
-    #customer routes
+    // customer routes
     Route::middleware('role:customer')->prefix('customer')->group(function () {
         Route::get('/bookings', [BookingController::class, 'index']);
         Route::post('/bookings', [BookingController::class, 'store']);
         Route::get('/bookings/{booking}', [BookingController::class, 'show']);
 
-        Route::patch('/bookings/{booking}/cancel', [CustomerBookingCancellationController::class, 'cancel',]);
+        Route::patch('/bookings/{booking}/cancel', [CustomerBookingCancellationController::class, 'cancel']);
 
-        Route::get('/quotations', [CustomerQuotationController::class, 'index',]);
-        Route::get('/quotations/{quotation}', [CustomerQuotationController::class, 'show',]);
-        Route::patch('/quotations/{quotation}/respond', [CustomerQuotationController::class, 'respond',]);
-        
-        Route::get('/invoices', [CustomerInvoiceController::class, 'index',]);
-        Route::get('/invoices/{invoice}', [CustomerInvoiceController::class, 'show',]);
+        Route::get('/quotations', [CustomerQuotationController::class, 'index']);
+        Route::get('/quotations/{quotation}', [CustomerQuotationController::class, 'show']);
+        Route::patch('/quotations/{quotation}/respond', [CustomerQuotationController::class, 'respond']);
+
+        Route::get('/invoices', [CustomerInvoiceController::class, 'index']);
+        Route::get('/invoices/{invoice}', [CustomerInvoiceController::class, 'show']);
+        Route::get('/payment-proofs', [CustomerPaymentProofController::class, 'index']);
+        Route::post('/invoices/{invoice}/payment-proofs', [CustomerPaymentProofController::class, 'store']);
+        Route::get('/payment-proofs/{paymentProof}', [CustomerPaymentProofController::class, 'show']);
     });
 });
 

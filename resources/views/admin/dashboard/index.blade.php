@@ -53,12 +53,23 @@
 
     <div class="mt-8 rounded-2xl bg-white border border-slate-200 shadow-sm">
         <div class="border-b border-slate-200 px-6 py-4">
-            <h2 class="font-semibold text-slate-900">
-                Recent Bookings
-            </h2>
-            <p class="text-sm text-slate-500">
-                Latest customer service requests
-            </p>
+            <div class="flex items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-semibold text-slate-900">
+                        Recent Bookings
+                    </h2>
+                    <p class="text-sm text-slate-500">
+                        Latest customer service requests
+                    </p>
+                </div>
+
+                <a
+                    href="{{ route('admin.bookings.index') }}"
+                    class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+                >
+                    Manage bookings
+                </a>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -70,6 +81,7 @@
                         <th class="px-6 py-3">Status</th>
                         <th class="px-6 py-3">Quotation</th>
                         <th class="px-6 py-3">Scheduled</th>
+                        <th class="px-6 py-3"></th>
                     </tr>
                 </thead>
 
@@ -110,10 +122,19 @@
                             <td class="px-6 py-4 text-slate-500">
                                 {{ $booking->scheduled_at?->format('d M Y, h:i A') }}
                             </td>
+
+                            <td class="px-6 py-4 text-right">
+                                <a
+                                    href="{{ route('admin.bookings.show', $booking) }}"
+                                    class="text-sm font-medium text-blue-700 hover:text-blue-900"
+                                >
+                                    View
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-10 text-center text-slate-500">
+                            <td colspan="6" class="px-6 py-10 text-center text-slate-500">
                                 No bookings yet.
                             </td>
                         </tr>

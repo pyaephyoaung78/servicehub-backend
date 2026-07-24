@@ -13,49 +13,88 @@
     <nav class="flex-1 px-4 py-5 space-y-1">
         <a
             href="{{ route('admin.dashboard') }}"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium bg-white/10 text-white"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.dashboard'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.dashboard'),
+            ])
         >
             Dashboard
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.bookings.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.bookings.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.bookings.*'),
+            ])
         >
             Bookings
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.quotations.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.quotations.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.quotations.*'),
+            ])
         >
             Quotations
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.staff.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.staff.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.staff.*'),
+            ])
         >
             Staff
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.invoices.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.invoices.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.invoices.*'),
+            ])
         >
             Invoices
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.payments.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.payments.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.payments.*'),
+            ])
         >
             Payments
         </a>
 
         <a
-            href="#"
-            class="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
+            href="{{ route('admin.payment-proofs.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.payment-proofs.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.payment-proofs.*'),
+            ])
+        >
+            Payment Proofs
+        </a>
+
+        <a
+            href="{{ route('admin.reports.index') }}"
+            @class([
+                'flex items-center rounded-xl px-4 py-3 text-sm font-medium',
+                'bg-white/10 text-white' => request()->routeIs('admin.reports.*'),
+                'text-slate-300 hover:bg-white/10 hover:text-white' => ! request()->routeIs('admin.reports.*'),
+            ])
         >
             Reports
         </a>
