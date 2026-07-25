@@ -3,7 +3,9 @@
     class="fixed inset-y-0 left-0 z-40 flex w-72 -translate-x-full flex-col border-r border-slate-800 bg-slate-950 text-white shadow-2xl transition-transform duration-200 ease-out lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:shadow-none">
     <div class="flex h-[72px] items-center justify-between border-b border-slate-800 px-5">
         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-slate-950">
-            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-600 text-sm font-bold tracking-tight text-white">SH</span>
+            <span class="flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl bg-slate-50" aria-hidden="true">
+                <img src="{{ asset('images/servicehub-logo-mark-v1.png') }}" alt="" class="h-full w-full scale-[1.4] object-contain">
+            </span>
             <span>
                 <span class="block text-[15px] font-semibold tracking-tight text-white">ServiceHub</span>
                 <span class="block text-xs text-slate-400">Operations</span>
