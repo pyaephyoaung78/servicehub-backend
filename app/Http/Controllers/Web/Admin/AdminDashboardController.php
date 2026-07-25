@@ -8,6 +8,7 @@ use App\Enums\QuotationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use App\Models\Quotation;
 use App\Models\StaffProfile;
 use Illuminate\View\View;
@@ -52,9 +53,49 @@ class AdminDashboardController extends Controller
             ->limit(8)
             ->get();
 
+        $weeklyBookingActivity = collect(range(6, 0))
+            ->map(function (int $daysAgo): array {
+                $date = now()->subDays($daysAgo);
+
+                return [
+                    'label' => $date->format('D'),
+                    'date' => $date->toDateString(),
+                    'bookings' => Booking::query()
+                        ->whereDate('created_at', $date)
+                        ->count(),
+                ];
+            });
+
+        $bookingStatusSummary = collect(BookingStatus::cases())
+            ->map(fn (BookingStatus $status): array => [
+                'label' => str($status->value)->replace('_', ' ')->title(),
+                'value' => Booking::query()
+                    ->where('status', $status)
+                    ->count(),
+            ]);
+
+        $financialMetrics = [
+            'collected_this_month' => InvoicePayment::query()
+                ->whereBetween('paid_at', [now()->startOfMonth(), now()])
+                ->sum('amount'),
+            'outstanding_balance' => Invoice::query()
+                ->whereIn('payment_status', [
+                    PaymentStatus::Unpaid,
+                    PaymentStatus::Partial,
+                ])
+                ->sum('remaining_amount'),
+            'invoices_this_month' => Invoice::query()
+                ->whereBetween('issued_at', [now()->startOfMonth(), now()])
+                ->count(),
+        ];
+
         return view('admin.dashboard.index', [
             'stats' => $stats,
             'recentBookings' => $recentBookings,
+            'weeklyBookingActivity' => $weeklyBookingActivity,
+            'weeklyBookingMaximum' => max(1, $weeklyBookingActivity->max('bookings')),
+            'bookingStatusSummary' => $bookingStatusSummary,
+            'financialMetrics' => $financialMetrics,
         ]);
     }
 }
