@@ -80,7 +80,8 @@ class StaffBookingWorkflowController extends Controller
 
                 return $transitionService->transition(
                     $lockedBooking,
-                    $data['action']
+                    $data['action'],
+                    $data['check_in_code'] ?? null
                 );
             }
         );
@@ -88,6 +89,7 @@ class StaffBookingWorkflowController extends Controller
         $booking->load([
             'customer',
             'service.category',
+            'timelineEvents.actor',
             'latestAssignment.staffProfile.user',
             'latestAssignment.assignedBy',
         ]);
@@ -111,6 +113,9 @@ class StaffBookingWorkflowController extends Controller
 
             'complete' =>
                 'Booking completed successfully.',
+
+            'refresh_check_in_code' =>
+                'A new customer check-in code is ready.',
 
             default =>
                 'Booking status updated successfully.',

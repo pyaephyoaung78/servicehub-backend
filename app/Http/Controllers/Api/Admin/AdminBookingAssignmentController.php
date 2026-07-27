@@ -13,6 +13,8 @@ use App\Models\Booking;
 use App\Models\BookingAssignment;
 use App\Models\StaffProfile;
 use App\Models\User;
+use App\Services\BookingTimelineService;
+use App\Services\BookingWorkflowNotifier;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -63,12 +65,14 @@ class AdminBookingAssignmentController extends Controller
 
     public function assign(
         AssignStaffRequest $request,
-        Booking $booking
+        Booking $booking,
+        BookingTimelineService $timelineService,
+        BookingWorkflowNotifier $notifier
     ): JsonResponse {
         $data = $request->validated();
 
         $assignment = DB::transaction(
-            function () use ($request, $booking, $data) {
+            function () use ($request, $booking, $data, $timelineService) {
                 /*
                  * Lock the booking row so two admin requests
                  * cannot assign different staff simultaneously.
@@ -186,14 +190,32 @@ class AdminBookingAssignmentController extends Controller
                     'status' => BookingStatus::Assigned,
                 ]);
 
+                $timelineService->record(
+                    $lockedBooking,
+                    'staff_assigned',
+                    'Staff assignment created',
+                    'A service professional was assigned and asked to confirm the booking.',
+                    $request->user(),
+                    ['staff_profile_id' => $staffProfile->id]
+                );
+
                 return $newAssignment;
             }
         );
 
         $assignment->load([
+            'booking',
             'staffProfile.user',
             'assignedBy',
         ]);
+
+        $notifier->notifyUser(
+            $assignment->staffProfile->user,
+            $assignment->booking_id,
+            'new_assignment',
+            'New service assignment',
+            "You have a new assignment for {$assignment->booking->service_name}."
+        );
 
         return $this->successResponse(
             'Staff assigned successfully.',

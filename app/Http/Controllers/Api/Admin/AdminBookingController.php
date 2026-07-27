@@ -28,6 +28,7 @@ class AdminBookingController extends Controller
                 'rejectedBy',
                 'invoice',
                 'quotation',
+                'timelineEvents.actor',
             ]);
 
         if (! empty($data['status'])) {
@@ -108,6 +109,7 @@ class AdminBookingController extends Controller
             'rejectedBy',
             'invoice',
             'quotation',
+            'timelineEvents.actor',
         ]);
 
         return $this->successResponse(

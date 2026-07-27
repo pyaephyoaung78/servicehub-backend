@@ -80,6 +80,7 @@ class AdminBookingController extends Controller
             'latestAssignment.assignedBy',
             'cancelledBy',
             'rejectedBy',
+            'timelineEvents.actor',
         ]);
 
         return view('admin.bookings.show', [

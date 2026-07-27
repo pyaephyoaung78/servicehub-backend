@@ -22,6 +22,9 @@ class Booking extends Model
         'status',
         'on_the_way_at',
         'started_at',
+        'check_in_code',
+        'check_in_code_expires_at',
+        'checked_in_at',
         'completed_at',
 
         'cancellation_reason',
@@ -42,6 +45,9 @@ class Booking extends Model
 
             'on_the_way_at' => 'datetime',
             'started_at' => 'datetime',
+            'check_in_code' => 'encrypted',
+            'check_in_code_expires_at' => 'datetime',
+            'checked_in_at' => 'datetime',
             'completed_at' => 'datetime',
 
             'cancelled_at' => 'datetime',
@@ -62,6 +68,12 @@ class Booking extends Model
     public function assignments(): HasMany
     {
         return $this->hasMany(BookingAssignment::class);
+    }
+
+    public function timelineEvents(): HasMany
+    {
+        return $this->hasMany(BookingTimelineEvent::class)
+            ->orderBy('occurred_at');
     }
 
     public function latestAssignment(): HasOne

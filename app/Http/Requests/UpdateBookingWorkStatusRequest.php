@@ -21,7 +21,14 @@ class UpdateBookingWorkStatusRequest extends FormRequest
                     'mark_on_the_way',
                     'start',
                     'complete',
+                    'refresh_check_in_code',
                 ]),
+            ],
+            'check_in_code' => [
+                'nullable',
+                'string',
+                'digits:6',
+                'required_if:action,start',
             ],
         ];
     }

@@ -146,6 +146,38 @@
     </section>
 </div>
 
+<section class="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,60,58,0.05)] sm:p-6">
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <h2 class="text-lg font-semibold tracking-tight text-slate-950">Service timeline</h2>
+            <p class="mt-1 text-sm text-slate-500">A permanent record of customer, staff, and system workflow updates.</p>
+        </div>
+        <span class="rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-800">{{ $booking->timelineEvents->count() }} events</span>
+    </div>
+
+    @if ($booking->timelineEvents->isEmpty())
+    <p class="mt-5 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">Timeline events will appear as this booking progresses.</p>
+    @else
+    <ol class="mt-6 space-y-5 border-l-2 border-teal-100 pl-5">
+        @foreach ($booking->timelineEvents as $event)
+        <li class="relative">
+            <span class="absolute -left-[1.78rem] top-1.5 h-3 w-3 rounded-full border-2 border-white bg-teal-600 shadow-sm"></span>
+            <p class="font-semibold text-slate-900">{{ $event->title }}</p>
+            @if ($event->description)
+            <p class="mt-1 text-sm leading-6 text-slate-600">{{ $event->description }}</p>
+            @endif
+            <p class="mt-1.5 text-xs font-medium text-slate-400">
+                {{ $event->occurred_at?->format('d M Y, h:i A') }}
+                @if ($event->actor)
+                <span class="text-slate-500">· {{ $event->actor->name }} ({{ ucfirst($event->actor->role) }})</span>
+                @endif
+            </p>
+        </li>
+        @endforeach
+    </ol>
+    @endif
+</section>
+
 @if ($booking->cancellation_reason || $booking->rejection_reason)
 <section class="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,60,58,0.05)] sm:p-6">
     <h2 class="text-lg font-semibold tracking-tight text-slate-950">Closure record</h2>
