@@ -146,6 +146,38 @@
     </section>
 </div>
 
+<div class="mt-6 grid gap-6 xl:grid-cols-2">
+    <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,60,58,0.05)] sm:p-6">
+        <h2 class="text-lg font-semibold tracking-tight text-slate-950">Booking conversation</h2>
+        <p class="mt-1 text-sm text-slate-500">Customer and assigned staff messages, including private attachments.</p>
+        @forelse ($booking->messages as $message)
+        <div class="mt-4 rounded-lg border border-slate-100 bg-slate-50 p-4">
+            <p class="text-sm font-semibold text-slate-900">{{ $message->sender?->name }} <span class="font-normal text-slate-500">· {{ ucfirst($message->sender?->role ?? 'user') }}</span></p>
+            @if ($message->body)<p class="mt-2 whitespace-pre-line text-sm text-slate-700">{{ $message->body }}</p>@endif
+            @if ($message->attachment_path)<a class="mt-2 inline-flex text-sm font-semibold text-teal-700 hover:text-teal-900" href="{{ route('admin.bookings.messages.attachment', [$booking, $message]) }}" target="_blank">Open attachment: {{ $message->attachment_original_name }}</a>@endif
+            <p class="mt-2 text-xs text-slate-400">{{ $message->created_at?->format('d M Y, h:i A') }}</p>
+        </div>
+        @empty
+        <p class="mt-5 text-sm text-slate-500">No messages have been sent for this booking.</p>
+        @endforelse
+    </section>
+
+    <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,60,58,0.05)] sm:p-6">
+        <h2 class="text-lg font-semibold tracking-tight text-slate-950">Before &amp; after proof</h2>
+        <p class="mt-1 text-sm text-slate-500">Photos submitted by the assigned staff while work is in progress.</p>
+        <div class="mt-5 grid gap-4 sm:grid-cols-2">
+            @forelse ($booking->serviceProofs as $proof)
+            <a href="{{ route('admin.bookings.service-proofs.file', [$booking, $proof]) }}" target="_blank" class="overflow-hidden rounded-lg border border-slate-200 bg-slate-50 transition hover:border-teal-300">
+                <img src="{{ route('admin.bookings.service-proofs.file', [$booking, $proof]) }}" alt="{{ ucfirst($proof->kind) }} service proof" class="h-36 w-full object-cover">
+                <div class="p-3"><p class="text-sm font-semibold text-slate-900">{{ strtoupper($proof->kind) }}</p><p class="mt-1 text-xs text-slate-500">{{ $proof->staffProfile?->user?->name }} · {{ $proof->captured_at?->format('d M, h:i A') }}</p></div>
+            </a>
+            @empty
+            <p class="text-sm text-slate-500 sm:col-span-2">No service photos have been uploaded yet.</p>
+            @endforelse
+        </div>
+    </section>
+</div>
+
 <section class="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,60,58,0.05)] sm:p-6">
     <div class="flex items-start justify-between gap-4">
         <div>

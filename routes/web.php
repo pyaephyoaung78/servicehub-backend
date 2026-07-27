@@ -51,6 +51,16 @@ Route::prefix('admin')
                 'show',
             ])->name('bookings.show');
 
+            Route::get('/bookings/{booking}/messages/{message}/attachment', [
+                AdminBookingController::class,
+                'messageAttachment',
+            ])->name('bookings.messages.attachment');
+
+            Route::get('/bookings/{booking}/service-proofs/{proof}/file', [
+                AdminBookingController::class,
+                'proofFile',
+            ])->name('bookings.service-proofs.file');
+
             Route::patch('/bookings/{booking}/cancel', [
                 AdminBookingController::class,
                 'cancel',
