@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Admin\AdminQuotationController;
 use App\Http\Controllers\Api\Admin\AdminStaffController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\BookingInteractionController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Customer\CustomerBookingCancellationController;
 use App\Http\Controllers\Api\Customer\CustomerInvoiceController;
@@ -34,6 +35,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/service-categories', [ServiceCategoryController::class, 'index']);
     Route::get('/services', [ServiceController::class, 'index']);
     Route::get('/services/{service}', [ServiceController::class, 'show']);
+    Route::get('/bookings/{booking}/messages', [BookingInteractionController::class, 'messages']);
+    Route::post('/bookings/{booking}/messages', [BookingInteractionController::class, 'storeMessage']);
+    Route::get('/bookings/{booking}/messages/{message}/attachment', [BookingInteractionController::class, 'messageAttachment'])->name('api.booking-messages.attachment');
+    Route::get('/bookings/{booking}/service-proofs', [BookingInteractionController::class, 'proofs']);
+    Route::post('/bookings/{booking}/service-proofs', [BookingInteractionController::class, 'storeProof']);
+    Route::get('/bookings/{booking}/service-proofs/{proof}/file', [BookingInteractionController::class, 'proofFile'])->name('api.service-proofs.file');
 
     // admin routes
     Route::middleware('role:admin')->prefix('admin')->group(function () {

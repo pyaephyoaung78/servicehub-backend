@@ -48,6 +48,15 @@ class BookingStatusTransitionService
         }
 
         if ($nextStatus === BookingStatus::Completed) {
+            $hasBeforeProof = $booking->serviceProofs()->where('kind', 'before')->exists();
+            $hasAfterProof = $booking->serviceProofs()->where('kind', 'after')->exists();
+
+            if (! $hasBeforeProof || ! $hasAfterProof) {
+                throw ValidationException::withMessages([
+                    'service_proofs' => ['Upload at least one before and one after service photo before completing the booking.'],
+                ]);
+            }
+
             $updates['completed_at'] = now();
         }
 

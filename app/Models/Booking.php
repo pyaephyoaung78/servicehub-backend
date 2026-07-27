@@ -76,6 +76,16 @@ class Booking extends Model
             ->orderBy('occurred_at');
     }
 
+    public function messages(): HasMany
+    {
+        return $this->hasMany(BookingMessage::class);
+    }
+
+    public function serviceProofs(): HasMany
+    {
+        return $this->hasMany(ServiceProof::class);
+    }
+
     public function latestAssignment(): HasOne
     {
         return $this->hasOne(BookingAssignment::class)
