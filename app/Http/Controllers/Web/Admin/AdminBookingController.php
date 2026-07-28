@@ -10,6 +10,7 @@ use App\Models\Booking;
 use App\Services\BookingClosureService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AdminBookingController extends Controller
@@ -80,11 +81,30 @@ class AdminBookingController extends Controller
             'latestAssignment.assignedBy',
             'cancelledBy',
             'rejectedBy',
+            'timelineEvents.actor',
+            'messages.sender',
+            'serviceProofs.staffProfile.user',
         ]);
 
         return view('admin.bookings.show', [
             'booking' => $booking,
         ]);
+    }
+
+    public function messageAttachment(Booking $booking, \App\Models\BookingMessage $message)
+    {
+        abort_unless($message->booking_id === $booking->id, 404);
+        abort_unless($message->attachment_path && Storage::disk('local')->exists($message->attachment_path), 404);
+
+        return response()->file(Storage::disk('local')->path($message->attachment_path), ['Content-Type' => $message->attachment_mime_type ?? 'application/octet-stream']);
+    }
+
+    public function proofFile(Booking $booking, \App\Models\ServiceProof $proof)
+    {
+        abort_unless($proof->booking_id === $booking->id, 404);
+        abort_unless(Storage::disk('local')->exists($proof->image_path), 404);
+
+        return response()->file(Storage::disk('local')->path($proof->image_path), ['Content-Type' => $proof->image_mime_type]);
     }
 
     public function cancel(

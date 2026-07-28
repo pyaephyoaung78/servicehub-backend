@@ -7,6 +7,7 @@ use App\Enums\QuotationStatus;
 use App\Models\Booking;
 use App\Models\Quotation;
 use App\Models\User;
+use App\Support\Money;
 use Illuminate\Validation\ValidationException;
 
 class QuotationService
@@ -32,13 +33,12 @@ class QuotationService
             ]);
         }
 
-        $servicePrice = (float) $booking->service_price;
-        $extraFee = (float) ($data['extra_fee'] ?? 0);
-        $discountAmount =
-            (float) ($data['discount_amount'] ?? 0);
-
-        $totalAmount =
-            $servicePrice + $extraFee - $discountAmount;
+        $servicePrice = Money::toMinor($booking->service_price);
+        $extraFee = Money::toMinor($data['extra_fee'] ?? 0);
+        $discountAmount = Money::toMinor(
+            $data['discount_amount'] ?? 0
+        );
+        $totalAmount = $servicePrice + $extraFee - $discountAmount;
 
         if ($totalAmount < 0) {
             throw ValidationException::withMessages([
@@ -54,10 +54,10 @@ class QuotationService
             'created_by' => $admin->id,
             'quotation_no' => $this->generateQuotationNo(),
             'service_name' => $booking->service_name,
-            'service_price' => $servicePrice,
-            'extra_fee' => $extraFee,
-            'discount_amount' => $discountAmount,
-            'total_amount' => $totalAmount,
+            'service_price' => Money::fromMinor($servicePrice),
+            'extra_fee' => Money::fromMinor($extraFee),
+            'discount_amount' => Money::fromMinor($discountAmount),
+            'total_amount' => Money::fromMinor($totalAmount),
             'status' => QuotationStatus::Sent,
             'admin_note' => $data['admin_note'] ?? null,
             'valid_until' => $data['valid_until'] ?? null,
@@ -152,7 +152,7 @@ class QuotationService
             ->whereDate('created_at', today())
             ->count() + 1;
 
-        return 'QUO-' . $date . '-' . str_pad(
+        return 'QUO-'.$date.'-'.str_pad(
             (string) $count,
             4,
             '0',

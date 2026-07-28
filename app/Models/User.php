@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -22,6 +23,8 @@ class User extends Authenticatable
         'provider_id',
         'avatar',
         'email_verified_at',
+        'referral_code',
+        'referred_by',
     ];
 
     protected $hidden = [
@@ -70,5 +73,30 @@ class User extends Authenticatable
     public function createdQuotations(): HasMany
     {
         return $this->hasMany(Quotation::class, 'created_by');
+    }
+
+    public function bookingReviews(): HasMany
+    {
+        return $this->hasMany(BookingReview::class, 'customer_id');
+    }
+
+    public function referrer(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'referred_by');
+    }
+
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(self::class, 'referred_by');
+    }
+
+    public function loyaltyPointTransactions(): HasMany
+    {
+        return $this->hasMany(LoyaltyPointTransaction::class, 'customer_id');
+    }
+
+    public function loyaltyRedemptions(): HasMany
+    {
+        return $this->hasMany(LoyaltyRedemption::class, 'customer_id');
     }
 }

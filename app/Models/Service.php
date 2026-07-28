@@ -42,4 +42,9 @@ class Service extends Model
             'service_staff'
         )->withTimestamps();
     }
+
+    public function customerFavorites(): HasMany
+    {
+        return $this->hasMany(CustomerFavoriteService::class);
+    }
 }

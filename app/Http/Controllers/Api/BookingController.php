@@ -8,6 +8,7 @@ use App\Http\Requests\StoreBookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\Service;
+use App\Services\BookingTimelineService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,6 +27,8 @@ class BookingController extends Controller
                 'rejectedBy',
                 'invoice',
                 'quotation',
+                'review.service',
+                'timelineEvents.actor',
             ]);
 
         if ($request->filled('status')) {
@@ -57,7 +60,10 @@ class BookingController extends Controller
         );
     }
 
-    public function store(StoreBookingRequest $request): JsonResponse
+    public function store(
+        StoreBookingRequest $request,
+        BookingTimelineService $timelineService
+    ): JsonResponse
     {
         $data = $request->validated();
 
@@ -87,6 +93,14 @@ class BookingController extends Controller
             'status' => BookingStatus::Pending,
         ]);
 
+        $timelineService->record(
+            $booking,
+            'booking_created',
+            'Booking request created',
+            'Your request is waiting for an admin quotation.',
+            $request->user()
+        );
+
         $booking->load('service.category');
 
         return $this->successResponse(
@@ -112,6 +126,8 @@ class BookingController extends Controller
                 'rejectedBy',
                 'invoice',
                 'quotation',
+                'review.service',
+                'timelineEvents.actor',
             ])
             ->findOrFail($booking);
 

@@ -17,6 +17,7 @@ class StorePaymentProofRequest extends FormRequest
             'amount' => [
                 'required',
                 'numeric',
+                'decimal:0,2',
                 'min:1',
             ],
             'payment_method' => [

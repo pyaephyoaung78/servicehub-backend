@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\BookingStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -9,6 +10,12 @@ class BookingResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $canViewCheckInCode =
+            $request->user()?->id === $this->customer_id
+            && $this->status === BookingStatus::OnTheWay
+            && $this->check_in_code
+            && $this->check_in_code_expires_at?->isFuture();
+
         return [
             'id' => $this->id,
 
@@ -77,6 +84,28 @@ class BookingResource extends JsonResource
                 $this->completed_at?->toISOString(),
             ],
 
+            'check_in' => [
+                'required' => in_array($this->status, [
+                    BookingStatus::OnTheWay,
+                    BookingStatus::InProgress,
+                    BookingStatus::Completed,
+                ], true),
+                'verified_at' => $this->checked_in_at?->toISOString(),
+                'code_expires_at' =>
+                $this->check_in_code_expires_at?->toISOString(),
+                'code' => $this->when(
+                    $canViewCheckInCode,
+                    $this->check_in_code
+                ),
+            ],
+
+            'timeline' => $this->whenLoaded(
+                'timelineEvents',
+                fn () => BookingTimelineEventResource::collection(
+                    $this->timelineEvents
+                )
+            ),
+
             'closure' => [
                 'cancellation_reason' =>
                 $this->cancellation_reason,
@@ -111,6 +140,13 @@ class BookingResource extends JsonResource
 
             'latest_assignment' => new BookingAssignmentResource(
                 $this->whenLoaded('latestAssignment')
+            ),
+
+            'review' => $this->whenLoaded(
+                'review',
+                fn () => $this->review
+                    ? new BookingReviewResource($this->review)
+                    : null
             ),
 
             'created_at' => $this->created_at?->toISOString(),

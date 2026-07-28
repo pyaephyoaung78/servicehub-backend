@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\PaymentProof;
 use App\Models\User;
+use App\Support\Money;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -42,9 +43,10 @@ class PaymentProofService
             ]);
         }
 
-        $amount = (float) $data['amount'];
+        $amount = Money::toMinor($data['amount']);
+        $remainingAmount = Money::toMinor($invoice->remaining_amount);
 
-        if ($amount > (float) $invoice->remaining_amount) {
+        if ($amount > $remainingAmount) {
             throw ValidationException::withMessages([
                 'amount' => [
                     'Payment amount cannot be greater than the remaining amount.',
@@ -60,7 +62,7 @@ class PaymentProofService
         try {
             return $invoice->paymentProofs()->create([
                 'customer_id' => $customer->id,
-                'amount' => $amount,
+                'amount' => Money::fromMinor($amount),
                 'payment_method' => $data['payment_method'],
                 'proof_path' => $path,
                 'proof_original_name' => $proof->getClientOriginalName(),

@@ -11,6 +11,12 @@ use Illuminate\Validation\ValidationException;
 
 class BookingClosureService
 {
+    public function __construct(
+        private readonly BookingTimelineService $timelineService,
+        private readonly BookingWorkflowNotifier $notifier
+    ) {
+    }
+
     public function cancel(
         Booking $booking,
         User $actor,
@@ -66,6 +72,23 @@ class BookingClosureService
             'cancelled_at' => now(),
         ]);
 
+        $this->timelineService->record(
+            $booking,
+            'booking_cancelled',
+            'Booking cancelled',
+            $reason ?: 'No cancellation reason was provided.',
+            $actor
+        );
+
+        if ($isAdmin) {
+            $this->notifier->notifyCustomer(
+                $booking,
+                'booking_cancelled',
+                'Your booking was cancelled',
+                $reason ?: 'Please contact support if you need help.'
+            );
+        }
+
         return $booking->fresh();
     }
 
@@ -104,6 +127,21 @@ class BookingClosureService
             'rejected_by' => $actor->id,
             'rejected_at' => now(),
         ]);
+
+        $this->timelineService->record(
+            $booking,
+            'booking_rejected',
+            'Booking request declined',
+            $reason,
+            $actor
+        );
+
+        $this->notifier->notifyCustomer(
+            $booking,
+            'booking_rejected',
+            'Your booking request was declined',
+            $reason
+        );
 
         return $booking->fresh();
     }

@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Web\Admin\AdminAuthController;
 use App\Http\Controllers\Web\Admin\AdminBookingController;
+use App\Http\Controllers\Web\Admin\AdminBookingReviewController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
 use App\Http\Controllers\Web\Admin\AdminInvoiceController;
+use App\Http\Controllers\Web\Admin\AdminLoyaltyController;
 use App\Http\Controllers\Web\Admin\AdminPaymentController;
 use App\Http\Controllers\Web\Admin\AdminPaymentProofController;
 use App\Http\Controllers\Web\Admin\AdminQuotationController;
@@ -51,6 +53,16 @@ Route::prefix('admin')
                 'show',
             ])->name('bookings.show');
 
+            Route::get('/bookings/{booking}/messages/{message}/attachment', [
+                AdminBookingController::class,
+                'messageAttachment',
+            ])->name('bookings.messages.attachment');
+
+            Route::get('/bookings/{booking}/service-proofs/{proof}/file', [
+                AdminBookingController::class,
+                'proofFile',
+            ])->name('bookings.service-proofs.file');
+
             Route::patch('/bookings/{booking}/cancel', [
                 AdminBookingController::class,
                 'cancel',
@@ -60,6 +72,21 @@ Route::prefix('admin')
                 AdminBookingController::class,
                 'reject',
             ])->name('bookings.reject');
+
+            Route::get('/booking-reviews', [
+                AdminBookingReviewController::class,
+                'index',
+            ])->name('booking-reviews.index');
+
+            Route::patch('/booking-reviews/{bookingReview}', [
+                AdminBookingReviewController::class,
+                'moderate',
+            ])->name('booking-reviews.moderate');
+
+            Route::get('/loyalty', [AdminLoyaltyController::class, 'index'])->name('loyalty.index');
+            Route::post('/loyalty/rewards', [AdminLoyaltyController::class, 'storeReward'])->name('loyalty.rewards.store');
+            Route::patch('/loyalty/rewards/{loyaltyReward}/toggle', [AdminLoyaltyController::class, 'toggleReward'])->name('loyalty.rewards.toggle');
+            Route::patch('/loyalty/redemptions/{loyaltyRedemption}', [AdminLoyaltyController::class, 'reviewRedemption'])->name('loyalty.redemptions.review');
 
             Route::get('/quotations', [
                 AdminQuotationController::class,

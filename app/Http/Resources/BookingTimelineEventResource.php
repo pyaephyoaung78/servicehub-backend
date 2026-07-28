@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class BookingTimelineEventResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'event_type' => $this->event_type,
+            'title' => $this->title,
+            'description' => $this->description,
+            'occurred_at' => $this->occurred_at?->toISOString(),
+            'actor' => $this->whenLoaded(
+                'actor',
+                fn () => $this->actor
+                    ? [
+                        'name' => $this->actor->name,
+                        'role' => $this->actor->role,
+                    ]
+                    : null
+            ),
+        ];
+    }
+}

@@ -8,10 +8,14 @@ use App\Http\Controllers\Api\Admin\AdminQuotationController;
 use App\Http\Controllers\Api\Admin\AdminStaffController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\BookingInteractionController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Customer\CustomerBookingCancellationController;
 use App\Http\Controllers\Api\Customer\CustomerInvoiceController;
+use App\Http\Controllers\Api\Customer\CustomerLoyaltyController;
 use App\Http\Controllers\Api\Customer\CustomerPaymentProofController;
 use App\Http\Controllers\Api\Customer\CustomerQuotationController;
+use App\Http\Controllers\Api\Customer\CustomerRetentionController;
 use App\Http\Controllers\Api\ServiceCategoryController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\Staff\StaffAssignmentController;
@@ -27,10 +31,18 @@ Route::post('/auth/google', [AuthController::class, 'googleLogin']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
 
     Route::get('/service-categories', [ServiceCategoryController::class, 'index']);
     Route::get('/services', [ServiceController::class, 'index']);
     Route::get('/services/{service}', [ServiceController::class, 'show']);
+    Route::get('/bookings/{booking}/messages', [BookingInteractionController::class, 'messages']);
+    Route::post('/bookings/{booking}/messages', [BookingInteractionController::class, 'storeMessage']);
+    Route::get('/bookings/{booking}/messages/{message}/attachment', [BookingInteractionController::class, 'messageAttachment'])->name('api.booking-messages.attachment');
+    Route::get('/bookings/{booking}/service-proofs', [BookingInteractionController::class, 'proofs']);
+    Route::post('/bookings/{booking}/service-proofs', [BookingInteractionController::class, 'storeProof']);
+    Route::get('/bookings/{booking}/service-proofs/{proof}/file', [BookingInteractionController::class, 'proofFile'])->name('api.service-proofs.file');
 
     // admin routes
     Route::middleware('role:admin')->prefix('admin')->group(function () {
@@ -84,6 +96,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/bookings', [BookingController::class, 'index']);
         Route::post('/bookings', [BookingController::class, 'store']);
         Route::get('/bookings/{booking}', [BookingController::class, 'show']);
+        Route::post('/bookings/{booking}/review', [CustomerRetentionController::class, 'storeReview']);
+        Route::post('/bookings/{booking}/rebook', [CustomerRetentionController::class, 'rebook']);
+        Route::get('/reviews', [CustomerRetentionController::class, 'reviews']);
+        Route::get('/favorite-services', [CustomerRetentionController::class, 'favorites']);
+        Route::post('/services/{service}/favorite', [CustomerRetentionController::class, 'toggleFavorite']);
+
+        Route::get('/loyalty', [CustomerLoyaltyController::class, 'summary']);
+        Route::get('/loyalty/rewards', [CustomerLoyaltyController::class, 'rewards']);
+        Route::get('/loyalty/transactions', [CustomerLoyaltyController::class, 'transactions']);
+        Route::get('/loyalty/redemptions', [CustomerLoyaltyController::class, 'redemptions']);
+        Route::post('/loyalty/rewards/{loyaltyReward}/redeem', [CustomerLoyaltyController::class, 'redeem']);
 
         Route::patch('/bookings/{booking}/cancel', [CustomerBookingCancellationController::class, 'cancel']);
 
