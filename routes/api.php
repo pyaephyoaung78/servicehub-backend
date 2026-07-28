@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\BookingInteractionController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Customer\CustomerBookingCancellationController;
 use App\Http\Controllers\Api\Customer\CustomerInvoiceController;
+use App\Http\Controllers\Api\Customer\CustomerLoyaltyController;
 use App\Http\Controllers\Api\Customer\CustomerPaymentProofController;
 use App\Http\Controllers\Api\Customer\CustomerQuotationController;
 use App\Http\Controllers\Api\Customer\CustomerRetentionController;
@@ -100,6 +101,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/reviews', [CustomerRetentionController::class, 'reviews']);
         Route::get('/favorite-services', [CustomerRetentionController::class, 'favorites']);
         Route::post('/services/{service}/favorite', [CustomerRetentionController::class, 'toggleFavorite']);
+
+        Route::get('/loyalty', [CustomerLoyaltyController::class, 'summary']);
+        Route::get('/loyalty/rewards', [CustomerLoyaltyController::class, 'rewards']);
+        Route::get('/loyalty/transactions', [CustomerLoyaltyController::class, 'transactions']);
+        Route::get('/loyalty/redemptions', [CustomerLoyaltyController::class, 'redemptions']);
+        Route::post('/loyalty/rewards/{loyaltyReward}/redeem', [CustomerLoyaltyController::class, 'redeem']);
 
         Route::patch('/bookings/{booking}/cancel', [CustomerBookingCancellationController::class, 'cancel']);
 

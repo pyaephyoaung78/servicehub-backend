@@ -14,21 +14,28 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\GoogleLoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Services\LoyaltyService;
 
 class AuthController extends Controller
 {
     use ApiResponse;
 
-    public function register(RegisterRequest $request): JsonResponse
+    public function register(RegisterRequest $request, LoyaltyService $loyaltyService): JsonResponse
     {
         $data = $request->validated();
+
+        $referrer = isset($data['referral_code'])
+            ? User::query()->where('referral_code', strtoupper($data['referral_code']))->first()
+            : null;
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $data['password'],
             'role' => 'customer',
+            'referred_by' => $referrer?->id,
         ]);
+        $loyaltyService->ensureReferralCode($user);
 
         $token = $user->createToken('mobile_token')->plainTextToken;
 
@@ -65,7 +72,7 @@ class AuthController extends Controller
         );
     }
 
-    public function googleLogin(GoogleLoginRequest $request): JsonResponse
+    public function googleLogin(GoogleLoginRequest $request, LoyaltyService $loyaltyService): JsonResponse
     {
         $data = $request->validated();
 
@@ -122,6 +129,7 @@ class AuthController extends Controller
                 'avatar' => $avatar,
                 'email_verified_at' => $emailVerified ? now() : null,
             ]);
+            $loyaltyService->ensureReferralCode($user);
         } else {
             $user->update([
                 'name' => $name,

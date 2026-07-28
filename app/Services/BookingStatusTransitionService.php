@@ -10,7 +10,8 @@ class BookingStatusTransitionService
 {
     public function __construct(
         private readonly BookingTimelineService $timelineService,
-        private readonly BookingWorkflowNotifier $notifier
+        private readonly BookingWorkflowNotifier $notifier,
+        private readonly LoyaltyService $loyaltyService
     ) {
     }
 
@@ -61,6 +62,10 @@ class BookingStatusTransitionService
         }
 
         $booking->update($updates);
+
+        if ($nextStatus === BookingStatus::Completed) {
+            $this->loyaltyService->awardForCompletedBooking($booking);
+        }
 
         $this->recordWorkflowUpdate($booking, $nextStatus);
 
