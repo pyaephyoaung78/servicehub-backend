@@ -104,6 +104,7 @@
             >
             Loyalty Program
         </a>
+        <a href="{{ route('admin.service-plans.index') }}" @class([ 'mb-1 flex items-center rounded-lg px-3 py-2.5 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-teal-400', 'bg-teal-600 text-white shadow-sm' => request()->routeIs('admin.service-plans.*'), 'text-slate-300 hover:bg-slate-800 hover:text-white' => ! request()->routeIs('admin.service-plans.*')])>Service Plans</a>
 
         <p class="mb-2 mt-6 px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Insights</p>
         <a

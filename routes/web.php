@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\Admin\AdminPaymentController;
 use App\Http\Controllers\Web\Admin\AdminPaymentProofController;
 use App\Http\Controllers\Web\Admin\AdminQuotationController;
 use App\Http\Controllers\Web\Admin\AdminReportController;
+use App\Http\Controllers\Web\Admin\AdminRecurringServicePlanController;
 use App\Http\Controllers\Web\Admin\AdminStaffController;
 use Illuminate\Support\Facades\Route;
 
@@ -84,6 +85,7 @@ Route::prefix('admin')
             ])->name('booking-reviews.moderate');
 
             Route::get('/loyalty', [AdminLoyaltyController::class, 'index'])->name('loyalty.index');
+            Route::get('/service-plans', [AdminRecurringServicePlanController::class, 'index'])->name('service-plans.index');
             Route::post('/loyalty/rewards', [AdminLoyaltyController::class, 'storeReward'])->name('loyalty.rewards.store');
             Route::patch('/loyalty/rewards/{loyaltyReward}/toggle', [AdminLoyaltyController::class, 'toggleReward'])->name('loyalty.rewards.toggle');
             Route::patch('/loyalty/redemptions/{loyaltyRedemption}', [AdminLoyaltyController::class, 'reviewRedemption'])->name('loyalty.redemptions.review');
