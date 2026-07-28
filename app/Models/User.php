@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Quotation::class, 'created_by');
     }
+
+    public function bookingReviews(): HasMany
+    {
+        return $this->hasMany(BookingReview::class, 'customer_id');
+    }
 }

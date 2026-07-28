@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Customer\CustomerBookingCancellationController;
 use App\Http\Controllers\Api\Customer\CustomerInvoiceController;
 use App\Http\Controllers\Api\Customer\CustomerPaymentProofController;
 use App\Http\Controllers\Api\Customer\CustomerQuotationController;
+use App\Http\Controllers\Api\Customer\CustomerRetentionController;
 use App\Http\Controllers\Api\ServiceCategoryController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\Staff\StaffAssignmentController;
@@ -94,6 +95,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/bookings', [BookingController::class, 'index']);
         Route::post('/bookings', [BookingController::class, 'store']);
         Route::get('/bookings/{booking}', [BookingController::class, 'show']);
+        Route::post('/bookings/{booking}/review', [CustomerRetentionController::class, 'storeReview']);
+        Route::post('/bookings/{booking}/rebook', [CustomerRetentionController::class, 'rebook']);
+        Route::get('/reviews', [CustomerRetentionController::class, 'reviews']);
+        Route::get('/favorite-services', [CustomerRetentionController::class, 'favorites']);
+        Route::post('/services/{service}/favorite', [CustomerRetentionController::class, 'toggleFavorite']);
 
         Route::patch('/bookings/{booking}/cancel', [CustomerBookingCancellationController::class, 'cancel']);
 

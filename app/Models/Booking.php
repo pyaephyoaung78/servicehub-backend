@@ -86,6 +86,11 @@ class Booking extends Model
         return $this->hasMany(ServiceProof::class);
     }
 
+    public function review(): HasOne
+    {
+        return $this->hasOne(BookingReview::class);
+    }
+
     public function latestAssignment(): HasOne
     {
         return $this->hasOne(BookingAssignment::class)
