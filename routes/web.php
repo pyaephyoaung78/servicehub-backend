@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\Admin\AdminAuthController;
 use App\Http\Controllers\Web\Admin\AdminBookingController;
+use App\Http\Controllers\Web\Admin\AdminCatalogController;
 use App\Http\Controllers\Web\Admin\AdminBookingReviewController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
 use App\Http\Controllers\Web\Admin\AdminInvoiceController;
@@ -48,6 +49,15 @@ Route::prefix('admin')
                 AdminBookingController::class,
                 'index',
             ])->name('bookings.index');
+
+            Route::get('/catalog', [AdminCatalogController::class, 'index'])->name('catalog.index');
+            Route::get('/catalog/services/create', [AdminCatalogController::class, 'createService'])->name('catalog.services.create');
+            Route::post('/catalog/services', [AdminCatalogController::class, 'storeService'])->name('catalog.services.store');
+            Route::get('/catalog/services/{service}/edit', [AdminCatalogController::class, 'editService'])->name('catalog.services.edit');
+            Route::put('/catalog/services/{service}', [AdminCatalogController::class, 'updateService'])->name('catalog.services.update');
+            Route::patch('/catalog/services/{service}/toggle', [AdminCatalogController::class, 'toggleService'])->name('catalog.services.toggle');
+            Route::post('/catalog/categories', [AdminCatalogController::class, 'storeCategory'])->name('catalog.categories.store');
+            Route::put('/catalog/categories/{serviceCategory}', [AdminCatalogController::class, 'updateCategory'])->name('catalog.categories.update');
 
             Route::get('/bookings/{booking}', [
                 AdminBookingController::class,
