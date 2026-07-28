@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\Admin\AdminAuthController;
 use App\Http\Controllers\Web\Admin\AdminBookingController;
+use App\Http\Controllers\Web\Admin\AdminBookingReviewController;
 use App\Http\Controllers\Web\Admin\AdminDashboardController;
 use App\Http\Controllers\Web\Admin\AdminInvoiceController;
 use App\Http\Controllers\Web\Admin\AdminPaymentController;
@@ -70,6 +71,16 @@ Route::prefix('admin')
                 AdminBookingController::class,
                 'reject',
             ])->name('bookings.reject');
+
+            Route::get('/booking-reviews', [
+                AdminBookingReviewController::class,
+                'index',
+            ])->name('booking-reviews.index');
+
+            Route::patch('/booking-reviews/{bookingReview}', [
+                AdminBookingReviewController::class,
+                'moderate',
+            ])->name('booking-reviews.moderate');
 
             Route::get('/quotations', [
                 AdminQuotationController::class,

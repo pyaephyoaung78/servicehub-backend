@@ -142,6 +142,13 @@ class BookingResource extends JsonResource
                 $this->whenLoaded('latestAssignment')
             ),
 
+            'review' => $this->whenLoaded(
+                'review',
+                fn () => $this->review
+                    ? new BookingReviewResource($this->review)
+                    : null
+            ),
+
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
         ];

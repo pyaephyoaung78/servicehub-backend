@@ -27,6 +27,7 @@ class BookingController extends Controller
                 'rejectedBy',
                 'invoice',
                 'quotation',
+                'review.service',
                 'timelineEvents.actor',
             ]);
 
@@ -125,6 +126,7 @@ class BookingController extends Controller
                 'rejectedBy',
                 'invoice',
                 'quotation',
+                'review.service',
                 'timelineEvents.actor',
             ])
             ->findOrFail($booking);
