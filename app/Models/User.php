@@ -99,4 +99,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(LoyaltyRedemption::class, 'customer_id');
     }
+
+    public function recurringServicePlans(): HasMany
+    {
+        return $this->hasMany(RecurringServicePlan::class, 'customer_id');
+    }
 }

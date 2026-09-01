@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Customer\CustomerLoyaltyController;
 use App\Http\Controllers\Api\Customer\CustomerPaymentProofController;
 use App\Http\Controllers\Api\Customer\CustomerQuotationController;
 use App\Http\Controllers\Api\Customer\CustomerRetentionController;
+use App\Http\Controllers\Api\Customer\CustomerRecurringServicePlanController;
 use App\Http\Controllers\Api\ServiceCategoryController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\Staff\StaffAssignmentController;
@@ -101,6 +102,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/reviews', [CustomerRetentionController::class, 'reviews']);
         Route::get('/favorite-services', [CustomerRetentionController::class, 'favorites']);
         Route::post('/services/{service}/favorite', [CustomerRetentionController::class, 'toggleFavorite']);
+        Route::get('/service-plans', [CustomerRecurringServicePlanController::class, 'index']);
+        Route::post('/bookings/{booking}/service-plan', [CustomerRecurringServicePlanController::class, 'store']);
+        Route::patch('/service-plans/{recurringServicePlan}', [CustomerRecurringServicePlanController::class, 'update']);
 
         Route::get('/loyalty', [CustomerLoyaltyController::class, 'summary']);
         Route::get('/loyalty/rewards', [CustomerLoyaltyController::class, 'rewards']);
